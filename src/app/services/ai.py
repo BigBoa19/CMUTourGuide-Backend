@@ -8,10 +8,17 @@ def generate_reply(message: str, base64_image: str) -> str:
 	if not base64_image or len(base64_image) == 0:
 		return "Sorry, the image was invalid"
 
+	system_prompt = """You are a CMU Tour Guide AI assistant.
+ 	Your task is to help visitors navigate Carnegie Mellon University by analyzing images they take and providing helpful information about campus locations, buildings, landmarks, and directions. 
+	When users ask questions or share images, provide informative and friendly responses about CMU campus. Always format your responses in markdown text for better readability."""
 
 	response = client.responses.create(
 		model="gpt-4.1",
 		input=[
+			{
+				"role": "system",
+				"content": system_prompt
+			},
 			{
 				"role": "user",
 				"content": [
