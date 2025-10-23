@@ -7,5 +7,5 @@ router = APIRouter(prefix="", tags=["chat"])
 @router.post("/chat", response_model=ChatResponse)
 async def chat(req: ChatRequest) -> ChatResponse:
 	print(req)
-	reply = generate_reply(req.message, req.imageBase64)
+	reply = generate_reply(req.messages)
 	return ChatResponse(reply=reply)

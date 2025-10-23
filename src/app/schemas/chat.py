@@ -1,9 +1,14 @@
 from pydantic import BaseModel
 from typing import Optional
 
+class Message(BaseModel):
+	id: str
+	text: str
+	isUser: bool
+	timestamp: str
+
 class ChatRequest(BaseModel):
-	message: str
-	imageBase64: Optional[str] = None
+	messages: list[Message]
 
 class ChatResponse(BaseModel):
 	reply: str
