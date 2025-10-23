@@ -5,13 +5,17 @@ def generate_reply(message: str, base64_image: str) -> str:
 	print("Generating reply...")
 	client = OpenAI(api_key=settings.openai_api_key)
 
-	if not base64_image or len(base64_image) == 0:
-		return "Sorry, the image was invalid"
-
 	system_prompt = """You are a CMU Tour Guide AI assistant.
  	Your task is to help visitors navigate Carnegie Mellon University by analyzing images they take and providing helpful information about campus locations, buildings, landmarks, and directions. 
 	When users ask questions or share images, provide informative and friendly responses about CMU campus. Always format your responses in markdown text for better readability."""
 
+	content = [{ "type": "input_text", "text": message }]
+	if base64_image:
+		content.append({
+			"type": "input_image",
+			"image_url": f"data:image/jpeg;base64,{base64_image}",
+		})
+	
 	response = client.responses.create(
 		model="gpt-4.1",
 		input=[
@@ -21,13 +25,7 @@ def generate_reply(message: str, base64_image: str) -> str:
 			},
 			{
 				"role": "user",
-				"content": [
-					{ "type": "input_text", "text": message },
-					{
-						"type": "input_image",
-						"image_url": f"data:image/jpeg;base64,{base64_image}",
-					},
-            	],
+				"content": content,
 			}
 		]
 	)
