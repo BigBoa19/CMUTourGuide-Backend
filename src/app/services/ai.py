@@ -1,13 +1,31 @@
+import asyncio
 from openai import OpenAI
 from app.config import settings
 from app.schemas.chat import Message
+from app.services.vision import recognize_building
 
-def identify_image(message: str, base64_image: str) -> str:
+async def identify_image_async(message: str, base64_image: str) -> str:
+	"""Async version of identify_image that uses building recognition."""
 	client = OpenAI(api_key=settings.openai_api_key)
 
+	# First, try to recognize the building using Modal
+	building_info = None
+	if base64_image:
+		building_result = await recognize_building(base64_image)
+		if building_result.get("building") and building_result.get("building") != "Unknown" and building_result.get("building") != "Error":
+			building_info = building_result
+			print(f"🏢 Recognized building: {building_info.get('building')} (confidence: {building_info.get('confidence', 0)})")
+
+	# Build enhanced system prompt with building info
 	system_prompt = """You are a CMU Tour Guide AI assistant.
  	Your task is to help visitors navigate Carnegie Mellon University by analyzing images they take and providing helpful information about campus locations, buildings, landmarks, and directions. 
 	When users ask questions or share images, provide informative and friendly responses about CMU campus. Always format your responses in markdown text for better readability."""
+	
+	if building_info:
+		system_prompt += f"\n\nIMPORTANT: The image has been identified as **{building_info.get('building')}** (confidence: {building_info.get('confidence', 0):.2%})."
+		if building_info.get('description'):
+			system_prompt += f" Building description: {building_info.get('description')}"
+		system_prompt += " Use this information to provide accurate and specific information about this building."
 
 	content = [{ "type": "input_text", "text": message }]
 	if base64_image:
@@ -32,6 +50,10 @@ def identify_image(message: str, base64_image: str) -> str:
 
 	print("Reply generated:", response.output_text)
 	return response.output_text
+
+def identify_image(message: str, base64_image: str) -> str:
+	"""Synchronous wrapper for identify_image_async."""
+	return asyncio.run(identify_image_async(message, base64_image))
 
 def generate_reply(messages: list[Message]) -> str:
 	client = OpenAI(api_key=settings.openai_api_key)

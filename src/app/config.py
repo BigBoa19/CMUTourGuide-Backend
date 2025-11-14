@@ -11,6 +11,7 @@ class Settings(BaseSettings):
 		"http://localhost:8081",
 	]
 	openai_api_key: str
+	modal_api_url: str = "https://ncdev1919--cmu-tour-guide-cv-recognize-building.modal.run"
 
 	@field_validator("cors_origins", mode="before")
 	@classmethod
