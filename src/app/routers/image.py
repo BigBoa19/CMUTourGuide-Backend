@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 from app.schemas.image import ImageRequest, ImageResponse
-from app.services.ai import identify_image
+from app.services.ai import identify_image_async
 
 router = APIRouter(prefix="", tags=["image"])
 
 @router.post("/image", response_model=ImageResponse)
 async def image(req: ImageRequest) -> ImageResponse:
 	print(req)
-	reply = identify_image(req.message, req.imageBase64)
+	reply = await identify_image_async(req.message, req.imageBase64)
 	return ImageResponse(reply=reply)

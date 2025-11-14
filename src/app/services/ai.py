@@ -1,4 +1,3 @@
-import asyncio
 from openai import OpenAI
 from app.config import settings
 from app.schemas.chat import Message
@@ -50,10 +49,6 @@ async def identify_image_async(message: str, base64_image: str) -> str:
 
 	print("Reply generated:", response.output_text)
 	return response.output_text
-
-def identify_image(message: str, base64_image: str) -> str:
-	"""Synchronous wrapper for identify_image_async."""
-	return asyncio.run(identify_image_async(message, base64_image))
 
 def generate_reply(messages: list[Message]) -> str:
 	client = OpenAI(api_key=settings.openai_api_key)
