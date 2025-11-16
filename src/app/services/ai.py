@@ -6,9 +6,13 @@ import os
 
 async def identify_image_async(message: str, base64_image: str) -> str:
 	"""Async version of identify_image that uses building recognition."""
+	api_key = os.getenv("OPENROUTER_API_KEY")
+	if not api_key:
+		raise ValueError("OPENROUTER_API_KEY environment variable is not set. Please configure it in Railway.")
+	
 	client = AsyncOpenAI(
 		base_url="https://openrouter.ai/api/v1",
-		api_key=os.getenv("OPENROUTER_API_KEY")
+		api_key=api_key
 	)
 
 	# First, try to recognize the building using Modal
@@ -62,9 +66,13 @@ async def identify_image_async(message: str, base64_image: str) -> str:
 		raise
 
 def generate_reply(messages: list[Message]) -> str:
+	api_key = os.getenv("OPENROUTER_API_KEY")
+	if not api_key:
+		raise ValueError("OPENROUTER_API_KEY environment variable is not set. Please configure it in Railway.")
+	
 	client = OpenAI(
 		base_url="https://openrouter.ai/api/v1",
-		api_key=os.getenv("OPENROUTER_API_KEY")
+		api_key=api_key
 	)
 
 	system_prompt = """You are a CMU Tour Guide AI assistant.
