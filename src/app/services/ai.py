@@ -30,29 +30,32 @@ async def identify_image_async(message: str, base64_image: str) -> str:
 			system_prompt += f" Building description: {building_info.get('description')}"
 		system_prompt += " Use this information to provide accurate and specific information about this building."
 
-	content = [{ "type": "input_text", "text": message }]
+	# Build content array for user message
+	user_content = [{"type": "text", "text": message}]
 	if base64_image:
-		content.append({
-			"type": "input_image",
-			"image_url": f"data:image/jpeg;base64,{base64_image}",
+		user_content.append({
+			"type": "image_url",
+			"image_url": {
+				"url": f"data:image/jpeg;base64,{base64_image}"
+			}
 		})
 	
-	response = client.responses.create(
-		model="gpt-4.1",
-		input=[
+	response = client.chat.completions.create(
+		model="openai/gpt-4o",
+		messages=[
 			{
 				"role": "system",
 				"content": system_prompt
 			},
 			{
 				"role": "user",
-				"content": content,
+				"content": user_content,
 			}
 		]
 	)
 
-	print("Reply generated:", response.output_text)
-	return response.output_text
+	print("Reply generated:", response.choices[0].message.content)
+	return response.choices[0].message.content
 
 def generate_reply(messages: list[Message]) -> str:
 	client = OpenAI(
@@ -73,10 +76,10 @@ def generate_reply(messages: list[Message]) -> str:
 			chatHistory.append({ "role": "assistant", "content": message.text})
 
 
-	response = client.responses.create(
-		model="gpt-4.1",
-		input=chatHistory
+	response = client.chat.completions.create(
+		model="openai/gpt-4o",
+		messages=chatHistory
 	)
 
-	print("Reply generated:", response.output_text)
-	return response.output_text
+	print("Reply generated:", response.choices[0].message.content)
+	return response.choices[0].message.content
