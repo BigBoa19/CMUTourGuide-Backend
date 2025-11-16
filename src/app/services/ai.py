@@ -2,10 +2,14 @@ from openai import OpenAI
 from app.config import settings
 from app.schemas.chat import Message
 from app.services.vision import recognize_building
+import os
 
 async def identify_image_async(message: str, base64_image: str) -> str:
 	"""Async version of identify_image that uses building recognition."""
-	client = OpenAI(api_key=settings.openai_api_key)
+	client = OpenAI(
+		base_url="https://openrouter.ai/api/v1",
+		api_key=os.getenv("OPENROUTER_API_KEY")
+	)
 
 	# First, try to recognize the building using Modal
 	building_info = None
@@ -51,7 +55,10 @@ async def identify_image_async(message: str, base64_image: str) -> str:
 	return response.output_text
 
 def generate_reply(messages: list[Message]) -> str:
-	client = OpenAI(api_key=settings.openai_api_key)
+	client = OpenAI(
+		base_url="https://openrouter.ai/api/v1",
+		api_key=os.getenv("OPENROUTER_API_KEY")
+	)
 
 	system_prompt = """You are a CMU Tour Guide AI assistant.
  	Your task is to help visitors navigate Carnegie Mellon University by analyzing images they take and providing helpful information about campus locations, buildings, landmarks, and directions. 
