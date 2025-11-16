@@ -1,4 +1,4 @@
-from openai import OpenAI
+from openai import OpenAI, AsyncOpenAI
 from app.config import settings
 from app.schemas.chat import Message
 from app.services.vision import recognize_building
@@ -6,7 +6,7 @@ import os
 
 async def identify_image_async(message: str, base64_image: str) -> str:
 	"""Async version of identify_image that uses building recognition."""
-	client = OpenAI(
+	client = AsyncOpenAI(
 		base_url="https://openrouter.ai/api/v1",
 		api_key=os.getenv("OPENROUTER_API_KEY")
 	)
@@ -40,22 +40,26 @@ async def identify_image_async(message: str, base64_image: str) -> str:
 			}
 		})
 	
-	response = client.chat.completions.create(
-		model="openai/gpt-4o",
-		messages=[
-			{
-				"role": "system",
-				"content": system_prompt
-			},
-			{
-				"role": "user",
-				"content": user_content,
-			}
-		]
-	)
+	try:
+		response = await client.chat.completions.create(
+			model="openai/gpt-4o",
+			messages=[
+				{
+					"role": "system",
+					"content": system_prompt
+				},
+				{
+					"role": "user",
+					"content": user_content,
+				}
+			]
+		)
 
-	print("Reply generated:", response.choices[0].message.content)
-	return response.choices[0].message.content
+		print("Reply generated:", response.choices[0].message.content)
+		return response.choices[0].message.content
+	except Exception as e:
+		print(f"Error in identify_image_async: {type(e).__name__}: {str(e)}")
+		raise
 
 def generate_reply(messages: list[Message]) -> str:
 	client = OpenAI(
