@@ -33,7 +33,7 @@ async def identify_image(base64_image: str) -> str:
 			"Authorization": f"Bearer {api_key}",
 			"Content-Type": "application/json"
 		}
-
+		print(system_prompt)
 		messages = [
 			{
 				"role": "user",
