@@ -2,22 +2,6 @@ import httpx
 from app.config import settings
 
 async def recognize_building(image_base64: str) -> dict:
-	"""
-	Call Modal API to recognize a building from a base64-encoded image.
-	
-	Args:
-		image_base64: Base64-encoded image string (with or without data URL prefix)
-		
-	Returns:
-		Dictionary with building recognition results:
-		{
-			"building": str,
-			"confidence": float,
-			"description": str,
-			"image_path": str,
-			"error": str | None
-		}
-	"""
 	if not settings.modal_api_url:
 		return {
 			"building": "Error",
@@ -56,7 +40,3 @@ async def recognize_building(image_base64: str) -> dict:
 			"description": f"Failed to call Modal API: {str(e)}",
 			"error": str(e)
 		}
-
-def analyze_image(image_url: str) -> dict:
-	# Placeholder for future computer vision analysis
-	return {"detected": False}
