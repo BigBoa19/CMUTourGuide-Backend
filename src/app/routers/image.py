@@ -7,5 +7,5 @@ router = APIRouter(prefix="", tags=["image"])
 @router.post("/image", response_model=ImageResponse)
 async def image(req: ImageRequest) -> ImageResponse:
 	print(req)
-	reply = await identify_image(req.message, req.imageBase64)
+	reply = await identify_image(req.imageBase64)
 	return ImageResponse(reply=reply)

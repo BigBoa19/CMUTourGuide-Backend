@@ -5,8 +5,7 @@ from app.services.vision import recognize_building
 import os
 import requests
 
-async def identify_image(message: str, base64_image: str) -> str:
-	print(message)
+async def identify_image(base64_image: str) -> str:
 	try:
 		# First, try to recognize the building using Modal
 		building_info = None
@@ -52,6 +51,7 @@ async def identify_image(message: str, base64_image: str) -> str:
 		}
 		response = requests.post(url, headers=headers, json=payload)
 		print(response.json())
+		return response.json()["choices"][0]["message"]["content"]
 	except Exception as e:
 		print(f"Error in identify_image_async: {type(e).__name__}: {str(e)}")
 		raise
