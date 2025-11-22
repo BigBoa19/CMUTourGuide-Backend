@@ -1,4 +1,3 @@
-from openai import OpenAI, AsyncOpenAI
 from app.schemas.chat import Message
 from app.services.vision import recognize_building
 import os
