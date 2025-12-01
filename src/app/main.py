@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from app.routers.health import router as health_router
 from app.routers.chat import router as chat_router
-from app.routers.image import router as image_router
+from app.routers.vision import router as vision_router
 
 app = FastAPI(title="CMU Tour Guide API", version="0.1.0")
 
@@ -22,7 +22,7 @@ app.add_middleware(
 
 app.include_router(health_router)
 app.include_router(chat_router)
-app.include_router(image_router)
+app.include_router(vision_router)
 
 
 @app.get("/")
