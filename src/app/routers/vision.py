@@ -29,6 +29,7 @@ async def recognize_building(image_base64: str) -> VisionResponse:
 			)
 			response.raise_for_status()
 			res_json =  response.json()
+			print(res_json)
 			building = res_json.get("building", "Unknown")
 			confidence = float(res_json.get("confidence", 0.0))
 			return VisionResponse(building_name=building, confidence=confidence, error= None)
