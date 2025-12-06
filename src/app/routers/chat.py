@@ -25,9 +25,10 @@ async def chat(req: ChatRequest) -> ChatResponse:
 
 def generate_reply(messages: list[Message]) -> str:
 	system_prompt = """You are a CMU Tour Guide AI assistant.
- 	Your task is to help visitors navigate Carnegie Mellon University by answering questions and providing helpful information about campus locations, buildings, landmarks, and directions. 
+ 	Your task is to help visitors navigate Carnegie Mellon University by answering questions and providing helpful information about campus buildings. 
 	Provide informative and friendly responses about CMU campus. Format your responses in markdown text for better readability.
-	Keep your responses short and concise."""
+	Keep your responses short and concise, one paragraph at most.
+	If the user's query seems irrelevant to CMU or inappropiate, politely decline to answer and suggest they ask about something else."""
 
 	chatHistory = [{ "role": "system", "content": system_prompt }]
 
